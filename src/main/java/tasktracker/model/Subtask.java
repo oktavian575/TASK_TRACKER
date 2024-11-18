@@ -3,8 +3,8 @@ package tasktracker.model;
 public class Subtask extends Task {
     private final Epic epic;
 
-    public Subtask(String name, String description, TaskStatus status, Epic epic) {
-        super(name, description, status);
+    public Subtask(int id, String name, String description, TaskStatus status, Epic epic) {
+        super(id, name, description, status);
         this.epic = epic;
     }
 

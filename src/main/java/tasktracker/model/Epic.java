@@ -6,8 +6,8 @@ import java.util.List;
 public class Epic extends Task {
     private final List<Subtask> subtasks;
 
-    public Epic(String name, String description) {
-        super(name, description, TaskStatus.NEW);
+    public Epic(int id, String name, String description) {
+        super(id, name, description, TaskStatus.NEW);
         this.subtasks = new ArrayList<>();
     }
 
@@ -15,13 +15,12 @@ public class Epic extends Task {
         return subtasks;
     }
 
-    //Обновлением статуса эпика занимается Эпик
     public void addSubtask(Subtask subtask) {
         subtasks.add(subtask);
         updateStatus();
+
     }
 
-    //Обновлением статуса эпика занимается Эпик
     public void removeSubtask(Subtask subtask) {
         subtasks.remove(subtask);
         updateStatus();
@@ -29,17 +28,24 @@ public class Epic extends Task {
 
     public void updateStatus() {
         if (subtasks.isEmpty()) {
-            setStatus(TaskStatus.NEW);
+            this.status = TaskStatus.NEW;
         }
-        setStatus(TaskStatus.IN_PROGRESS);
         boolean allDone = true;
         boolean allNew = true;
         for (Subtask subtask : subtasks) {
-            if (subtask.getStatus() != TaskStatus.DONE) allDone = false;
-            else if (subtask.getStatus() != TaskStatus.NEW) allNew = false;
+            if (subtask.getStatus() != TaskStatus.DONE) {
+                allDone = false;
+            }
+            if (subtask.getStatus() != TaskStatus.NEW) {
+                allNew = false;
+            }
         }
-        if (allDone) setStatus(TaskStatus.DONE);
-        else if (allNew) setStatus(TaskStatus.NEW);
+        if (allDone) {
+            this.status = TaskStatus.DONE;
+        }
+        if (allNew) {
+            this.status = TaskStatus.NEW;
+        }
+        this.status = TaskStatus.IN_PROGRESS;
     }
-
 }
