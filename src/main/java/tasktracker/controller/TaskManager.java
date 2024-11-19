@@ -20,6 +20,8 @@ public interface TaskManager {
     void deleteTask(int id);
 
     Task getTaskById(int id);
+    Subtask getSubtaskById(int id);
+    Epic getEpicById(int id);
 
     List<Task> getTasks();
 

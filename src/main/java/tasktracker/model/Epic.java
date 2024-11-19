@@ -37,10 +37,20 @@ public class Epic extends Task {
         boolean allNew = true;
         for (Subtask subtask : subtasks) {
             if (subtask.getStatus() != TaskStatus.DONE) allDone = false;
-            else if (subtask.getStatus() != TaskStatus.NEW) allNew = false;
+            if (subtask.getStatus() != TaskStatus.NEW) allNew = false;
         }
         if (allDone) setStatus(TaskStatus.DONE);
         else if (allNew) setStatus(TaskStatus.NEW);
     }
 
+    @Override
+    public String toString() {
+        return "Epic{" +
+                "id=" + getId() +
+                ", name='" + getName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", status=" + getStatus() +
+                ", subtasks=" + subtasks +
+                '}';
+    }
 }

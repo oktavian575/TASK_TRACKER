@@ -9,7 +9,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Epic> epics;
     private final Map<Integer, Subtask> subtasks;
     private int idCounter;
-    private final Deque<Integer> history;
+    private final HistoryManager historyManager;
     private final Map<Integer, TaskType> tasksType;
 
     public InMemoryTaskManager() {
@@ -17,7 +17,7 @@ public class InMemoryTaskManager implements TaskManager {
         epics = new HashMap<>();
         subtasks = new HashMap<>();
         idCounter = 0;
-        history = new LinkedList<>();
+        historyManager = Managers.getDefaultHistory();
         tasksType = new HashMap<>();
     }
 
@@ -68,7 +68,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTask(int id) {
-        Task task = tasks.get(id);
+        Task task = getTaskById(id);
         if (task instanceof Epic epic) {
             for (Subtask subtask : epic.getSubtasks())
                 subtasks.remove(subtask.getId());
@@ -77,21 +77,30 @@ public class InMemoryTaskManager implements TaskManager {
             Epic epic = subtask.getEpic();
             if (epic != null)
                 epic.removeSubtask(subtask);
+            subtasks.remove(id);
         } else tasks.remove(id);
     }
 
     @Override
     public Task getTaskById(int id) {
-        if (tasksType.get(id).equals(TaskType.TASK_TYPE)) {
-            addToHistory(id);
-            return tasks.get(id);
-        } else if (tasksType.get(id).equals(TaskType.EPIC_TASK_TYPE)) {
-            addToHistory(id);
-            return epics.get(id);
-        } else if (tasksType.get(id).equals(TaskType.SUBTASK_TYPE)) {
-            addToHistory(id);
-            return subtasks.get(id);
-        } else return null;
+        Task task = null;
+        if (tasksType.get(id).equals(TaskType.TASK_TYPE))
+            task = tasks.get(id);
+        else if (tasksType.get(id).equals(TaskType.EPIC_TASK_TYPE))
+            task = epics.get(id);
+        else if (tasksType.get(id).equals(TaskType.SUBTASK_TYPE))
+            task = subtasks.get(id);
+        if (task != null)
+            historyManager.addToHistory(task);
+        return task;
+    }
+
+    public Epic getEpicById (int id){
+        return (Epic) getTaskById(id);
+    }
+
+    public Subtask getSubtaskById (int id){
+        return (Subtask) getTaskById(id);
     }
 
     @Override
@@ -134,32 +143,8 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks.clear();
     }
 
-    @Override
-    public List<Task> getHistory() {
-        List<Task> historyTasks = new ArrayList<>();
-        for (Integer id : history) {
-            Task task = tasks.get(id);
-            if (task != null) {
-                historyTasks.add(task);
-            } else {
-                Epic epic = epics.get(id);
-                if (epic != null) {
-                    historyTasks.add(epic);
-                } else {
-                    Subtask subtask = subtasks.get(id);
-                    if (subtask != null) {
-                        historyTasks.add(subtask);
-                    }
-                }
-            }
-        }
-        return historyTasks;
+    public List<Task> getHistory(){
+        return historyManager.getHistory();
     }
 
-    private void addToHistory(int id) {
-        history.addLast(id);
-        if (history.size() > 10) {
-            history.removeFirst();
-        }
-    }
 }
