@@ -1,13 +1,12 @@
 package tasktracker.model;
 
 public class Task {
-    private final int id;
+    private int id;
     private String name;
     private String description;
-    TaskStatus status;
+    private TaskStatus status;
 
-    public Task(int id, String name, String description, TaskStatus status) {
-        this.id = id;
+    public Task(String name, String description, TaskStatus status) {
         this.name = name;
         this.description = description;
         this.status = status;
@@ -15,6 +14,10 @@ public class Task {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -35,6 +38,10 @@ public class Task {
 
     public TaskStatus getStatus() {
         return status;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
     }
 
     @Override

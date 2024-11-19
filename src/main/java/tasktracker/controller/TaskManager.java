@@ -24,26 +24,39 @@ public class TaskManager {
         return ++idCounter;
     }
 
-    public void addTask(Task task) {
-        tasks.put(generateNewId(), task);
+    public int addTask(Task task) {
+        idCounter = generateNewId();
+        task.setId(idCounter);
+        tasks.put(idCounter, task);
+        return idCounter;
     }
 
-    public void addEpic(Epic epic) {
-        epics.put(generateNewId(), epic);
+    public int addEpic(Epic epic) {
+        idCounter = generateNewId();
+        epic.setId(idCounter);
+        epics.put(idCounter, epic);
+        return idCounter;
     }
 
-    public void addSubtask(Subtask subtask) {
-        subtasks.put(generateNewId(), subtask);
+    public int addSubtask(Subtask subtask) {
+        idCounter = generateNewId();
+        subtask.setId(idCounter);
+        subtasks.put(idCounter, subtask);
         subtask.getEpic().addSubtask(subtask);
+        return idCounter;
     }
 
-    public void updateTask(Task task) {
+    public void updateTask(int id, Task task) {
         if (task instanceof Epic)
-            epics.put(task.getId(), (Epic) task);
-        else if (task instanceof Subtask)
-            subtasks.put(task.getId(), (Subtask) task);
+            epics.put(id, (Epic) task);
+        else if (task instanceof Subtask){
+            Subtask subtask = (Subtask) task;
+            subtasks.put(id, subtask);
+            Epic epic = subtask.getEpic();
+            epic.updateStatus();
+        }
         else
-            tasks.put(task.getId(), task);
+            tasks.put(id, task);
     }
 
     public void deleteTask(int id) {
@@ -56,7 +69,6 @@ public class TaskManager {
             Epic epic = subtask.getEpic();
             if (epic != null)
                 epic.removeSubtask(subtask);
-
         } else tasks.remove(id);
     }
 
@@ -80,30 +92,20 @@ public class TaskManager {
         return epic.getSubtasks();
     }
 
-    public Task getTaskByName(String name) {
-        for (Task task : tasks.values())
-            if (task.getName().equals(name))
-                return task;
-        return null;
+    public void deleteTasks() {
+        tasks.clear();
     }
 
-    public void printProject() {
-        System.out.println("All Tasks:");
-        for (Task task : getAllTasks())
-            System.out.println(task.getId() + ": " + task.getName() + " - " + task.getStatus());
-
-        System.out.println("\nAll Epics:");
-        for (Epic epic : getAllEpics())
-            System.out.println(epic.getId() + ": " + epic.getName() + " - " + epic.getStatus());
-
-        System.out.println("\nAll Subtasks:");
-        for (Subtask subtask : getAllSubtasks())
-            System.out.println(subtask.getId() + ": " + subtask.getName() + " - " + subtask.getStatus());
-
-        for (Epic epic : getAllEpics()) {
-            System.out.println("\nSubtasks of Epic " + epic.getId() + ":");
-            for (Subtask subtask : getSubtasksByEpic(epic))
-                System.out.println(subtask.getId() + ": " + subtask.getName() + " - " + subtask.getStatus());
+    public void deleteSubtasks() {
+        for (Subtask subtask : subtasks.values()) {
+            subtask.getEpic().removeSubtask(subtask);
+            subtask.getEpic().updateStatus();
         }
+        subtasks.clear();
+    }
+
+    public void deleteEpics() {
+        epics.clear();
+        subtasks.clear();
     }
 }
