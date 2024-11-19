@@ -7,9 +7,9 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         TaskManager manager = new TaskManager();
-        List<Integer> tasksIds = new ArrayList<Integer>();
-        List<Integer> epicsIds = new ArrayList<Integer>();
-        List<Integer> subtaskIds = new ArrayList<Integer>();
+        List<Integer> tasksIds = new ArrayList<>();
+        List<Integer> epicsIds = new ArrayList<>();
+        List<Integer> subtaskIds = new ArrayList<>();
 
         tasksIds.add(manager.addTask(new Task("Moving", "Move to a new apartment", TaskStatus.NEW)));
         tasksIds.add(manager.addTask(new Task("Java", "Complete task tracker", TaskStatus.IN_PROGRESS)));

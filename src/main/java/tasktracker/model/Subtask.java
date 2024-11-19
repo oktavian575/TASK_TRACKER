@@ -1,7 +1,5 @@
 package tasktracker.model;
 
-import tasktracker.controller.TaskManager;
-
 public class Subtask extends Task {
     private final Epic epic;
 

@@ -49,8 +49,7 @@ public class TaskManager {
     public void updateTask(int id, Task task) {
         if (task instanceof Epic)
             epics.put(id, (Epic) task);
-        else if (task instanceof Subtask){
-            Subtask subtask = (Subtask) task;
+        else if (task instanceof Subtask subtask){
             subtasks.put(id, subtask);
             Epic epic = subtask.getEpic();
             epic.updateStatus();
