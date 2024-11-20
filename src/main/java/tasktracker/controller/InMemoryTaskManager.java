@@ -21,7 +21,6 @@ public class InMemoryTaskManager implements TaskManager {
         tasksType = new HashMap<>();
     }
 
-    @Override
     public int generateNewId() {
         return ++idCounter;
     }
@@ -95,10 +94,12 @@ public class InMemoryTaskManager implements TaskManager {
         return task;
     }
 
+    @Override
     public Epic getEpicById (int id){
         return (Epic) getTaskById(id);
     }
 
+    @Override
     public Subtask getSubtaskById (int id){
         return (Subtask) getTaskById(id);
     }
